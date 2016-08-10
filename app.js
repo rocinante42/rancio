@@ -93,11 +93,19 @@ function sendTextMessage(recipientId, messageText) {
     mdb.searchMovie({
         query: spacesOut
     }, function(err, resp) {
+        //handling errors
+        if (resp['results'][0]){
+          var peli = resp['results'][0]
+          var peli_id = resp['results'][0]['id'].toString();
+          var peli_poster = resp['results'][0]['poster_path'];
+        } else {
+          var peli = '';
+          var peli_id ='';
+          var peli_poster = '';
+        }
 
-        var peli = resp['results'][0]
-        var peli_id = resp['results'][0]['id'].toString();
-        var peli_poster = resp['results'][0]['poster_path'];
 
+        //mensaje
         var messageData = {
             recipient: {
                 id: recipientId
@@ -112,7 +120,7 @@ function sendTextMessage(recipientId, messageText) {
                             subtitle: "Movie description goes here",
                             //item_url: app.base_url+"/mdb?movie="+messageText,
                             image_url: app.img_url + peli_poster,
-                            
+
                         }]
                     }
                 }
