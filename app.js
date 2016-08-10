@@ -94,118 +94,131 @@ function sendTextMessage(recipientId, messageText) {
             id: recipientId
         },
         message: {
-            text: messageText //getMovie(messageText) //displaying the text
             attachment: {
                 type: "template",
                 payload: {
                     template_type: "generic",
                     elements: [{
-                            title: "rift",
-                            subtitle: "Next-generation virtual reality",
-                            item_url: "https://www.oculus.com/en-us/rift/",
-                            image_url: "http://messengerdemo.parseapp.com/img/rift.png",
-                            buttons: [{
-                                type: "web_url",
-                                url: "https://www.oculus.com/en-us/rift/",
-                                title: "Open Web URL"
-                            }, {
-                                type: "postback",
-                                title: "Call Postback",
-                                payload: "Payload for first bubble",
-                            }],
+                        title: "rift",
+                        subtitle: "Next-generation virtual reality",
+                        item_url: "https://www.oculus.com/en-us/rift/",
+                        image_url: "http://messengerdemo.parseapp.com/img/rift.png",
+                        buttons: [{
+                            type: "web_url",
+                            url: "https://www.oculus.com/en-us/rift/",
+                            title: "Open Web URL"
+                        }, {
+                            type: "postback",
+                            title: "Call Postback",
+                            payload: "Payload for first bubble",
+                        }],
+                    }, {
+                        title: "touch",
+                        subtitle: "Your Hands, Now in VR",
+                        item_url: "https://www.oculus.com/en-us/touch/",
+                        image_url: "http://messengerdemo.parseapp.com/img/touch.png",
+                        buttons: [{
+                            type: "web_url",
+                            url: "https://www.oculus.com/en-us/touch/",
+                            title: "Open Web URL"
+                        }, {
+                            type: "postback",
+                            title: "Call Postback",
+                            payload: "Payload for second bubble",
                         }]
-                    }
+                    }]
                 }
             }
-        };
+        }
+    };
 
-        callSendAPI(messageData);
-    }
+    callSendAPI(messageData);
+}
 
-    function callSendAPI(messageData) {
-        request({
-            uri: 'https://graph.facebook.com/v2.6/me/messages',
-            qs: {
-                access_token: 'EAAElESuD4ZBABAKwcE96vz7eEcLXKJn7eTMJehctbdcXys3TDhGufSQxZBPDNErryZBT8ZB0Eu1yTKpJon3BBBsAmDXei1kQq1bI82I59uhFR1HHfnyj6JXgZCvctggb3FqvyfQm7k36j1omh7ezZA0WV4YFZAFUKM7Gsf9DDpstwZDZD'
-            },
-            method: 'POST',
-            json: messageData
+function callSendAPI(messageData) {
+    request({
+        uri: 'https://graph.facebook.com/v2.6/me/messages',
+        qs: {
+            access_token: 'EAAElESuD4ZBABAKwcE96vz7eEcLXKJn7eTMJehctbdcXys3TDhGufSQxZBPDNErryZBT8ZB0Eu1yTKpJon3BBBsAmDXei1kQq1bI82I59uhFR1HHfnyj6JXgZCvctggb3FqvyfQm7k36j1omh7ezZA0WV4YFZAFUKM7Gsf9DDpstwZDZD'
+        },
+        method: 'POST',
+        json: messageData
 
-        }, function(error, response, body) {
-            if (!error && response.statusCode == 200) {
-                var recipientId = body.recipient_id;
-                var messageId = body.message_id;
+    }, function(error, response, body) {
+        if (!error && response.statusCode == 200) {
+            var recipientId = body.recipient_id;
+            var messageId = body.message_id;
 
-                console.log("Successfully sent generic message with id %s to recipient %s",
-                    messageId, recipientId);
-            } else {
-                console.error("Unable to send message.");
-                console.error(response);
-                console.error(error);
-            }
-        });
-    }
-
-
-    //This part is where my bot does the stuff I want ///////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    app.post('/webhook', function(req, res) {
-        var data = req.body;
-
-        // Make sure this is a page subscription
-        if (data.object == 'page') {
-            // Iterate over each entry
-            // There may be multiple if batched
-            data.entry.forEach(function(pageEntry) {
-                var pageID = pageEntry.id;
-                var timeOfEvent = pageEntry.time;
-
-                // Iterate over each messaging event
-                pageEntry.messaging.forEach(function(messagingEvent) {
-                    if (messagingEvent.optin) {
-                        //receivedAuthentication(messagingEvent);
-                    } else if (messagingEvent.message) {
-                        receivedMessage(messagingEvent); //aqui mando el mensaje
-                    } else if (messagingEvent.delivery) {
-                        //receivedDeliveryConfirmation(messagingEvent);
-                    } else if (messagingEvent.postback) {
-                        //receivedPostback(messagingEvent);
-                    } else {
-                        console.log("Webhook received unknown messagingEvent: ", messagingEvent);
-                    }
-                });
-            });
-
-            // Assume all went well.
-            //
-            // You must send back a 200, within 20 seconds, to let us know you've
-            // successfully received the callback. Otherwise, the request will time out.
-            res.sendStatus(200);
+            console.log("Successfully sent generic message with id %s to recipient %s",
+                messageId, recipientId);
+        } else {
+            console.error("Unable to send message.");
+            console.error(response);
+            console.error(error);
         }
     });
+}
 
-    //moviedb restapi /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+//This part is where my bot does the stuff I want ///////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+app.post('/webhook', function(req, res) {
+    var data = req.body;
 
-    app.get('/mdb', function(req, res) {
-        mdb.searchMovie({
-            query: req.query.movie
-        }, function(err, resp) {
+    // Make sure this is a page subscription
+    if (data.object == 'page') {
+        // Iterate over each entry
+        // There may be multiple if batched
+        data.entry.forEach(function(pageEntry) {
+            var pageID = pageEntry.id;
+            var timeOfEvent = pageEntry.time;
 
-            var peli = resp['results'][0]
-            var peli_id = resp['results'][0]['id'].toString();
-            var peli_poster = resp['results'][0]['poster_path'];
-
-            res.send(app.img_url + peli_poster);
-
-            //res.send(peli);
-            //console.log(peli.id);
-            //res.send(req.query.movie);
+            // Iterate over each messaging event
+            pageEntry.messaging.forEach(function(messagingEvent) {
+                if (messagingEvent.optin) {
+                    //receivedAuthentication(messagingEvent);
+                } else if (messagingEvent.message) {
+                    receivedMessage(messagingEvent); //aqui mando el mensaje
+                } else if (messagingEvent.delivery) {
+                    //receivedDeliveryConfirmation(messagingEvent);
+                } else if (messagingEvent.postback) {
+                    //receivedPostback(messagingEvent);
+                } else {
+                    console.log("Webhook received unknown messagingEvent: ", messagingEvent);
+                }
+            });
         });
-    });
+
+        // Assume all went well.
+        //
+        // You must send back a 200, within 20 seconds, to let us know you've
+        // successfully received the callback. Otherwise, the request will time out.
+        res.sendStatus(200);
+    }
+});
+
+//moviedb restapi /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-    //Setting the listen method to our enviroment port
-    app.listen(port, function() {
-        console.log("Node JS server launched, running on http:localhost//:" + port);
+app.get('/mdb', function(req, res) {
+    mdb.searchMovie({
+        query: req.query.movie
+    }, function(err, resp) {
+
+        var peli = resp['results'][0]
+        var peli_id = resp['results'][0]['id'].toString();
+        var peli_poster = resp['results'][0]['poster_path'];
+
+        res.send(app.img_url + peli_poster);
+
+        //res.send(peli);
+        //console.log(peli.id);
+        //res.send(req.query.movie);
     });
+});
+
+
+//Setting the listen method to our enviroment port
+app.listen(port, function() {
+    console.log("Node JS server launched, running on http:localhost//:" + port);
+});
