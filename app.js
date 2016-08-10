@@ -21,7 +21,7 @@ app.get('/', function(req, res){
   res.send("Hello world");
 });
 
-app.get('/', function(req, res){
+app.get('/privacy', function(req, res){
   res.send("We are not collecting any data at this moment");
 });
 
