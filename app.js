@@ -31,7 +31,9 @@ app.get('/', function(req, res) {
 
 function getMovie(txt){
 
-  //
+  request(app.base_url+'mdb/?movie='+txt, function(err, res, body){
+    return body;
+  })
 
 }
 
@@ -92,9 +94,7 @@ function sendTextMessage(recipientId, messageText) {
       id: recipientId
     },
     message: {
-      text: request(app.base_url+'mdb/?movie='+messageText, function(err, res, body){
-        return body;
-      })//getMovie(messageText) //displaying the text
+      text: messageText//getMovie(messageText) //displaying the text
     }
   };
 
