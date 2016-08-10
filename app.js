@@ -149,7 +149,7 @@ app.post('/webhook', function(req, res) {
 app.get('/mdb', function(req, res){
   mdb.searchMovie({query: 'Alien' }, function(err, resp){
     //res.send(resp);
-    res.send(req.query);
+    res.send(req.query.movie);
   });
 });
 
