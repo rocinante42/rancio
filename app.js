@@ -94,14 +94,15 @@ function sendTextMessage(recipientId, messageText) {
         query: spacesOut
     }, function(err, resp) {
         //handling errors
+        console.log(resp);
         if (resp['results'][0]){
           var peli = resp['results'][0]
           var peli_id = resp['results'][0]['id'].toString();
           var peli_poster = resp['results'][0]['poster_path'];
         } else {
-          var peli = '';
-          var peli_id ='';
-          var peli_poster = '';
+          var peli = '' ;
+          var peli_id ='' ;
+          var peli_poster = '' ;
         }
 
 
