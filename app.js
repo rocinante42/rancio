@@ -89,9 +89,9 @@ function receivedMessage(event) {
 };
 //sending message to chat ------------------------
 function sendTextMessage(recipientId, messageText) {
-
+    var spacesOut = messageText.split(' ').join('%20');
     mdb.searchMovie({
-        query: messageText
+        query: spacesOut
     }, function(err, resp) {
 
         var peli = resp['results'][0]
@@ -204,7 +204,7 @@ app.get('/mdb', function(req, res) {
         var peli_id = resp['results'][0]['id'].toString();
         var peli_poster = resp['results'][0]['poster_path'];
 
-        res.send('<img src=' + app.img_url + peli_poster + '>');
+        res.send(peli);
         //
         //res.send(peli);
         //console.log(peli.id);
