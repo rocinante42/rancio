@@ -154,7 +154,7 @@ app.get('/mdb', function(req, res){
 });
 app.get('/mdbtest', function(req, res){
   mdb.searchMovie({query: req.query.movie }, function(err, resp){
-    res.send(resp.body.results.0.id);
+    res.send(resp);
     //res.send(req.query.movie);
   });
 });
