@@ -21,6 +21,10 @@ app.get('/', function(req, res){
   res.send("Hello world");
 });
 
+app.get('/', function(req, res){
+  res.send("We are not collecting any data at this moment");
+});
+
 
 //Setting the listen method to our enviroment port
 app.listen(port, function(){
