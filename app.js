@@ -148,6 +148,13 @@ app.post('/webhook', function(req, res) {
 
 app.get('/mdb', function(req, res){
   mdb.searchMovie({query: req.query.movie }, function(err, resp){
+    res.send(resp);
+    //res.send(req.query.movie);
+  });
+});
+
+app.get('/mdbtest', function(req, res){
+  mdb.searchMovie({query: req.query.movie }, function(err, resp){
     res.send(resp[results][0][id]);
     //res.send(req.query.movie);
   });
