@@ -4,6 +4,7 @@ var request = require('request');
 var mdb = require('moviedb')('8437ba0afa5bdf8e982bc6f76d885b01');
 var app = express();
 app.img_url = "http://image.tmdb.org/t/p/original";
+app.base_url = 'http://rancio.herokuapp.com'
 
 app.use(bodyparser.json());
 
@@ -25,11 +26,20 @@ app.get('/webhook', function(req, res) {
 app.get('/', function(req, res) {
     res.send("Hello world");
 });
-//facebook API ////////////////////////////////////////////////////////////////////////////////////////
+//My personal functions
 
-function sendMovieName(text){
-  return text;
+
+function getMovie(txt){
+
+  request(app.base_url+'mdb/?movie='+txt, function(err, res, body){
+    return body;
+  });
+  
 }
+
+
+
+//facebook API ////////////////////////////////////////////////////////////////////////////////////////
 
 
 function receivedMessage(event) {
@@ -84,7 +94,7 @@ function sendTextMessage(recipientId, messageText) {
       id: recipientId
     },
     message: {
-      text: sendMovieName(messageText)
+      text: getMovie(messageText)
     }
   };
 
