@@ -112,11 +112,7 @@ function sendTextMessage(recipientId, messageText) {
                             subtitle: "Movie description goes here",
                             //item_url: app.base_url+"/mdb?movie="+messageText,
                             image_url: app.img_url + peli_poster,
-                            buttons: [{
-                                //type: "web_url",
-                                //url: "https://www.oculus.com/en-us/rift/",
-                                //title: "Open Web URL"
-                            }],
+                            
                         }]
                     }
                 }
