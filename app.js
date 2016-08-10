@@ -64,7 +64,7 @@ function receivedMessage(event) {
         // keywords and send back the corresponding example. Otherwise, just echo
         // the text we received.
         switch (messageText) {
-            case 'postero':
+            case 'poster':
                 sendPosterMessage(senderID, messageText);
                 break;
 
@@ -89,11 +89,12 @@ function receivedMessage(event) {
 };
 //sending message to chat ------------------------
 function sendPosterMessage(recipientId, messageText) {
-  var txt = messageText.replace('postero', '');
-  var txt2 = txt.replace('Postero', '');
-  var spacesOut = txt2.split(' ').join('%20');
+  var spacesOut = messageText.split(' ').join('%20');
+  var txt = spacesOut.split('poster').join('%20');
+  console.log(txt);
+
   mdb.searchMovie({
-      query: spacesOut
+      query: txt
   }, function(err, resp) {
       //handling errors
       console.log(resp);
