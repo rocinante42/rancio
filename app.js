@@ -64,8 +64,8 @@ function receivedMessage(event) {
         // keywords and send back the corresponding example. Otherwise, just echo
         // the text we received.
         switch (messageText) {
-            case 'image':
-                sendImageMessage(senderID);
+            case 'poster':
+                sendPosterMessage(senderID, messageText);
                 break;
 
             case 'button':
@@ -88,6 +88,52 @@ function receivedMessage(event) {
     }
 };
 //sending message to chat ------------------------
+function sendPosterMessage(recipientId, messageText) {
+  messageText.replace('poster', '');
+  messageText.replace('Poster', '');
+  var spacesOut = messageText.split(' ').join('%20');
+  mdb.searchMovie({
+      query: spacesOut
+  }, function(err, resp) {
+      //handling errors
+      console.log(resp);
+      if (resp['results'][0]){
+        var peli = resp['results'][0]
+        var peli_des = resp['results'][0]['overview'];
+        var peli_poster = resp['results'][0]['poster_path'];
+      } else {
+        var peli = '' ;
+        var peli_des ='' ;
+        var peli_poster = '' ;
+      }
+
+
+      //mensaje
+      var messageData = {
+          recipient: {
+              id: recipientId
+          },
+          message: {
+              attachment: {
+                  type: "template",
+                  payload: {
+                      template_type: "generic",
+                      elements: [{
+                          item_url: app.img_url + peli_poster,
+                          image_url: app.img_url + peli_poster,
+                      }]
+                  }
+              }
+          }
+      };
+
+      callSendAPI(messageData);
+  });
+}
+
+
+
+
 function sendTextMessage(recipientId, messageText) {
     var spacesOut = messageText.split(' ').join('%20');
     mdb.searchMovie({
@@ -119,7 +165,7 @@ function sendTextMessage(recipientId, messageText) {
                         elements: [{
                             title: messageText,
                             subtitle: peli_des,
-                            //item_url: app.base_url+"/mdb?movie="+messageText,
+                            item_url: app.img_url + peli_poster,
                             image_url: app.img_url + peli_poster,
 
                         }]
@@ -132,7 +178,7 @@ function sendTextMessage(recipientId, messageText) {
     });
 
 
-
+//ni idea uqe hace esto
 }
 
 function callSendAPI(messageData) {
