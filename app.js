@@ -92,7 +92,7 @@ function sendTextMessage(recipientId, messageText) {
       id: recipientId
     },
     message: {
-      text: request(app.base_url+'mdb/?movie='+txt, function(err, res, body){
+      text: request(app.base_url+'mdb/?movie='+messageText, function(err, res, body){
         return body;
       })//getMovie(messageText) //displaying the text
     }
