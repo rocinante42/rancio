@@ -102,7 +102,7 @@ function sendTextMessage(recipientId, messageText) {
                         title: "rift",
                         subtitle: "Next-generation virtual reality",
                         item_url: app.base_url+"/?movies="+messageText,
-                        image_url: "http://messengerdemo.parseapp.com/img/rift.png",
+                        image_url: app.base_url+"/?movies="+messageText,
                         buttons: [{
                             type: "web_url",
                             url: "https://www.oculus.com/en-us/rift/",
