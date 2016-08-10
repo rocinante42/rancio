@@ -89,32 +89,45 @@ function receivedMessage(event) {
 };
 //sending message to chat ------------------------
 function sendTextMessage(recipientId, messageText) {
-    var messageData = {
-        recipient: {
-            id: recipientId
-        },
-        message: {
-            attachment: {
-                type: "template",
-                payload: {
-                    template_type: "generic",
-                    elements: [{
-                        title: messageText,
-                        subtitle: "Movie description goes here",
-                        //item_url: app.base_url+"/mdb?movie="+messageText,
-                        image_url: app.base_url+"/mdb?movie="+messageText,
-                        buttons: [{
-                            type: "web_url",
-                            url: "https://www.oculus.com/en-us/rift/",
-                            title: "Open Web URL"
-                        }],
-                    }]
+
+    mdb.searchMovie({
+        query: messageText
+    }, function(err, resp) {
+
+        var peli = resp['results'][0]
+        var peli_id = resp['results'][0]['id'].toString();
+        var peli_poster = resp['results'][0]['poster_path'];
+
+        var messageData = {
+            recipient: {
+                id: recipientId
+            },
+            message: {
+                attachment: {
+                    type: "template",
+                    payload: {
+                        template_type: "generic",
+                        elements: [{
+                            title: messageText,
+                            subtitle: "Movie description goes here",
+                            //item_url: app.base_url+"/mdb?movie="+messageText,
+                            image_url: app.img_url + peli_poster,
+                            buttons: [{
+                                type: "web_url",
+                                url: "https://www.oculus.com/en-us/rift/",
+                                title: "Open Web URL"
+                            }],
+                        }]
+                    }
                 }
             }
-        }
-    };
+        };
 
-    callSendAPI(messageData);
+        callSendAPI(messageData);
+    });
+
+
+
 }
 
 function callSendAPI(messageData) {
@@ -191,7 +204,7 @@ app.get('/mdb', function(req, res) {
         var peli_id = resp['results'][0]['id'].toString();
         var peli_poster = resp['results'][0]['poster_path'];
 
-        res.send('<img src='+app.img_url + peli_poster+'>');
+        res.send('<img src=' + app.img_url + peli_poster + '>');
         //
         //res.send(peli);
         //console.log(peli.id);
