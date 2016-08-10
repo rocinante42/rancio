@@ -91,6 +91,7 @@ function receivedMessage(event) {
 function sendPosterMessage(recipientId, messageText) {
   var spacesOut = messageText.split(' ').join('%20');
   var txt = spacesOut.split('poster').join('%20');
+  console.log("ACA VA EL TITULO EL FUCKING TITULO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
   console.log(txt);
 
   mdb.searchMovie({
