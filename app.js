@@ -99,18 +99,14 @@ function sendTextMessage(recipientId, messageText) {
                 payload: {
                     template_type: "generic",
                     elements: [{
-                        title: "rift",
-                        subtitle: "Next-generation virtual reality",
-                        item_url: app.base_url+"/mdb?movie="+messageText,
+                        title: messageText,
+                        subtitle: "Movie description goes here",
+                        //item_url: app.base_url+"/mdb?movie="+messageText,
                         image_url: app.base_url+"/mdb?movie="+messageText,
                         buttons: [{
                             type: "web_url",
                             url: "https://www.oculus.com/en-us/rift/",
                             title: "Open Web URL"
-                        }, {
-                            type: "postback",
-                            title: "Call Postback",
-                            payload: "Payload for first bubble",
                         }],
                     }]
                 }
@@ -195,8 +191,8 @@ app.get('/mdb', function(req, res) {
         var peli_id = resp['results'][0]['id'].toString();
         var peli_poster = resp['results'][0]['poster_path'];
 
-        res.send(app.img_url + peli_poster);
-
+        res.send('<img src='+app.img_url + peli_poster+'>');
+        //
         //res.send(peli);
         //console.log(peli.id);
         //res.send(req.query.movie);
