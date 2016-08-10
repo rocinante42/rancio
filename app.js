@@ -89,9 +89,9 @@ function receivedMessage(event) {
 };
 //sending message to chat ------------------------
 function sendPosterMessage(recipientId, messageText) {
-  messageText.replace('poster', '');
-  messageText.replace('Poster', '');
-  var spacesOut = messageText.split(' ').join('%20');
+  txt = messageText.replace('poster', '');
+  txt2 = txt.replace('Poster', '');
+  var spacesOut = txt2.split(' ').join('%20');
   mdb.searchMovie({
       query: spacesOut
   }, function(err, resp) {
