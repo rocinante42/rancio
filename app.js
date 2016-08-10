@@ -89,8 +89,8 @@ function receivedMessage(event) {
 };
 //sending message to chat ------------------------
 function sendPosterMessage(recipientId, messageText) {
-  txt = messageText.replace('poster', '');
-  txt2 = txt.replace('Poster', '');
+  var txt = messageText.replace('poster', '');
+  var txt2 = txt.replace('Poster', '');
   var spacesOut = txt2.split(' ').join('%20');
   mdb.searchMovie({
       query: spacesOut
@@ -119,6 +119,7 @@ function sendPosterMessage(recipientId, messageText) {
                   payload: {
                       template_type: "generic",
                       elements: [{
+                          title: txt2,
                           item_url: app.img_url + peli_poster,
                           image_url: app.img_url + peli_poster,
                       }]
