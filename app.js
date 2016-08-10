@@ -1,6 +1,7 @@
 var express = require('express');
 var bodyparser = require('body-parser');
 var request = require('request');
+var mdb = require('moviedb')('8437ba0afa5bdf8e982bc6f76d885b01');
 var app = express();
 
 app.use(bodyparser.json());
@@ -141,6 +142,14 @@ app.post('/webhook', function(req, res) {
         // successfully received the callback. Otherwise, the request will time out.
         res.sendStatus(200);
     }
+});
+
+//moviedb restapi
+
+app.get('/mdb', function(req, res){
+  mdb.searchMovie({query: 'Alien' }, function(err, resp){
+    res.send(resp);
+  });
 });
 
 
