@@ -3,6 +3,7 @@ var bodyparser = require('body-parser');
 var request = require('request');
 var mdb = require('moviedb')('8437ba0afa5bdf8e982bc6f76d885b01');
 var app = express();
+app.img_url = "http://image.tmdb.org/t/p/original";
 
 app.use(bodyparser.json());
 
@@ -25,6 +26,12 @@ app.get('/', function(req, res) {
     res.send("Hello world");
 });
 //facebook API ////////////////////////////////////////////////////////////////////////////////////////
+
+function sendMovieName(text){
+  return text;
+}
+
+
 function receivedMessage(event) {
     var senderID = event.sender.id;
     var recipientID = event.recipient.id;
@@ -77,7 +84,7 @@ function sendTextMessage(recipientId, messageText) {
       id: recipientId
     },
     message: {
-      text: "Hola!"//messageText
+      text: sendMovieName(messageText);
     }
   };
 
@@ -125,7 +132,7 @@ app.post('/webhook', function(req, res) {
                 if (messagingEvent.optin) {
                     //receivedAuthentication(messagingEvent);
                 } else if (messagingEvent.message) {
-                    receivedMessage(messagingEvent);
+                    receivedMessage(messagingEvent); //aqui mando el mensaje
                 } else if (messagingEvent.delivery) {
                     //receivedDeliveryConfirmation(messagingEvent);
                 } else if (messagingEvent.postback) {
@@ -144,17 +151,20 @@ app.post('/webhook', function(req, res) {
     }
 });
 
-//moviedb restapi
+//moviedb restapi /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 app.get('/mdb', function(req, res){
   mdb.searchMovie({query: req.query.movie }, function(err, resp){
-    res.send(resp);
-    //res.send(req.query.movie);
-  });
-});
-app.get('/mdbtest', function(req, res){
-  mdb.searchMovie({query: req.query.movie }, function(err, resp){
-    res.send(resp[0]);
+
+    var peli = resp['results'][0]
+    var peli_id = resp['results'][0]['id'].toString();
+    var peli_poster = resp['results'][0]['poster_path'];
+
+    res.send(app.img_url+peli_poster);
+
+    //res.send(peli);
+    //console.log(peli.id);
     //res.send(req.query.movie);
   });
 });
