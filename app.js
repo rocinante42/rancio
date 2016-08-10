@@ -77,7 +77,7 @@ function receivedMessage(event) {
         sendTextMessage(senderID, "Message with attachment received");
     }
 };
-//sending message to chat
+//sending message to chat ------------------------
 function sendTextMessage(recipientId, messageText) {
   var messageData = {
     recipient: {
