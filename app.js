@@ -112,7 +112,7 @@ function sendTextMessage(recipientId, messageText) {
                 id: recipientId
             },
             message: {
-                text: pelides,
+                text: peli_des,
                 attachment: {
                     type: "template",
                     payload: {
