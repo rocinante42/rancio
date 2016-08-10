@@ -19,7 +19,8 @@
   "homepage": "https://github.com/rocinante42/rancio#readme",
   "dependencies": {
     "body-parser": "^1.15.2",
-    "express": "^4.14.0"
+    "express": "^4.14.0",
+    "request": "^2.74.0"
   },
   "engines": {
     "node": "6.3.0"
