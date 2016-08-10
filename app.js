@@ -101,8 +101,8 @@ function sendTextMessage(recipientId, messageText) {
                     elements: [{
                         title: "rift",
                         subtitle: "Next-generation virtual reality",
-                        item_url: app.base_url+"/?movies="+messageText,
-                        image_url: app.base_url+"/?movies="+messageText,
+                        item_url: app.base_url+"/mdb?movies="+messageText,
+                        image_url: app.base_url+"/mdb?movies="+messageText,
                         buttons: [{
                             type: "web_url",
                             url: "https://www.oculus.com/en-us/rift/",
