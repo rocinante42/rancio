@@ -115,14 +115,11 @@ function sendPosterMessage(recipientId, messageText) {
           },
           message: {
               attachment: {
-                  type: "template",
+                  type: "image",
                   payload: {
-                      template_type: "generic",
-                      elements: [{
-                          title: txt2,
-                          item_url: app.img_url + peli_poster,
-                          image_url: app.img_url + peli_poster,
-                      }]
+
+                    url: app.img_url + peli_poster
+
                   }
               }
           }
