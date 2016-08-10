@@ -112,14 +112,13 @@ function sendTextMessage(recipientId, messageText) {
                 id: recipientId
             },
             message: {
-                text: peli_des,
                 attachment: {
                     type: "template",
                     payload: {
                         template_type: "generic",
                         elements: [{
                             title: messageText,
-                            subtitle: "Movie description goes here",
+                            subtitle: peli_des,
                             //item_url: app.base_url+"/mdb?movie="+messageText,
                             image_url: app.img_url + peli_poster,
 
