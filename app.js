@@ -2,32 +2,148 @@ var express = require('express');
 var bodyparser = require('body-parser');
 var app = express();
 
+app.use(bodyparser.json());
+
 //process.env.PORT lets the port be set by Heroku
 var port = process.env.PORT || 8080;
 //routes
 //webhook
 app.get('/webhook', function(req, res) {
-  if (req.query['hub.mode'] === 'subscribe' &&
-      req.query['hub.verify_token'] === 'rancio_bot') {
-    console.log("Validating webhook");
-    res.status(200).send(req.query['hub.challenge']);
-  } else {
-    console.error("Failed validation. Make sure the validation tokens match.");
-    res.sendStatus(403);
-  }
+    if (req.query['hub.mode'] === 'subscribe' &&
+        req.query['hub.verify_token'] === 'rancio_bot') {
+        console.log("Validating webhook");
+        res.status(200).send(req.query['hub.challenge']);
+    } else {
+        console.error("Failed validation. Make sure the validation tokens match.");
+        res.sendStatus(403);
+    }
 });
-//
-app.get('/', function(req, res){
-  res.send("Hello world");
+// hello world
+app.get('/', function(req, res) {
+    res.send("Hello world");
 });
+//facebook API
+function receivedMessage(event) {
+    var senderID = event.sender.id;
+    var recipientID = event.recipient.id;
+    var timeOfMessage = event.timestamp;
+    var message = event.message;
 
-app.get('/privacy', function(req, res){
-  res.send(200);
-  res.send("We are not collecting any data at this moment");
+    console.log("Received message for user %d and page %d at %d with message:",
+        senderID, recipientID, timeOfMessage);
+    console.log(JSON.stringify(message));
+
+    var messageId = message.mid;
+
+    // You may get a text or attachment but not both
+    var messageText = message.text;
+    var messageAttachments = message.attachments;
+
+    if (messageText) {
+
+        // If we receive a text message, check to see if it matches any special
+        // keywords and send back the corresponding example. Otherwise, just echo
+        // the text we received.
+        switch (messageText) {
+            case 'image':
+                sendImageMessage(senderID);
+                break;
+
+            case 'button':
+                sendButtonMessage(senderID);
+                break;
+
+            case 'generic':
+                sendGenericMessage(senderID);
+                break;
+
+            case 'receipt':
+                sendReceiptMessage(senderID);
+                break;
+
+            default:
+                sendTextMessage(senderID, messageText);
+        }
+    } else if (messageAttachments) {
+        sendTextMessage(senderID, "Message with attachment received");
+    }
+};
+
+function sendTextMessage(recipientId, messageText) {
+  var messageData = {
+    recipient: {
+      id: recipientId
+    },
+    message: {
+      text: messageText
+    }
+  };
+
+  callSendAPI(messageData);
+}
+
+function callSendAPI(messageData) {
+  request({
+    uri: 'https://graph.facebook.com/v2.6/me/messages',
+    qs: { access_token: 'EAAElESuD4ZBABAKwcE96vz7eEcLXKJn7eTMJehctbdcXys3TDhGufSQxZBPDNErryZBT8ZB0Eu1yTKpJon3BBBsAmDXei1kQq1bI82I59uhFR1HHfnyj6JXgZCvctggb3FqvyfQm7k36j1omh7ezZA0WV4YFZAFUKM7Gsf9DDpstwZDZD' },
+    method: 'POST',
+    json: messageData
+
+  }, function (error, response, body) {
+    if (!error && response.statusCode == 200) {
+      var recipientId = body.recipient_id;
+      var messageId = body.message_id;
+
+      console.log("Successfully sent generic message with id %s to recipient %s",
+        messageId, recipientId);
+    } else {
+      console.error("Unable to send message.");
+      console.error(response);
+      console.error(error);
+    }
+  });
+}
+
+
+//This part is where my bot does the stuff I want ///////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+app.post('/webhook', function(req, res) {
+    var data = req.body;
+
+    // Make sure this is a page subscription
+    if (data.object == 'page') {
+        // Iterate over each entry
+        // There may be multiple if batched
+        data.entry.forEach(function(pageEntry) {
+            var pageID = pageEntry.id;
+            var timeOfEvent = pageEntry.time;
+
+            // Iterate over each messaging event
+            pageEntry.messaging.forEach(function(messagingEvent) {
+                if (messagingEvent.optin) {
+                    receivedAuthentication(messagingEvent);
+                } else if (messagingEvent.message) {
+                    receivedMessage(messagingEvent);
+                } else if (messagingEvent.delivery) {
+                    receivedDeliveryConfirmation(messagingEvent);
+                } else if (messagingEvent.postback) {
+                    receivedPostback(messagingEvent);
+                } else {
+                    console.log("Webhook received unknown messagingEvent: ", messagingEvent);
+                }
+            });
+        });
+
+        // Assume all went well.
+        //
+        // You must send back a 200, within 20 seconds, to let us know you've
+        // successfully received the callback. Otherwise, the request will time out.
+        res.sendStatus(200);
+    }
 });
 
 
 //Setting the listen method to our enviroment port
-app.listen(port, function(){
-  console.log("Node JS server launched, running on http:localhost//:"+ port);
+app.listen(port, function() {
+    console.log("Node JS server launched, running on http:localhost//:" + port);
 });
