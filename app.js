@@ -64,7 +64,7 @@ function receivedMessage(event) {
         // keywords and send back the corresponding example. Otherwise, just echo
         // the text we received.
         switch (messageText) {
-            case 'poster':
+            case 'star':
                 sendPosterMessage(senderID, messageText);
                 break;
 
