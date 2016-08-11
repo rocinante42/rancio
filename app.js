@@ -81,54 +81,92 @@ function receivedMessage(event) {
                 break;
 
             default:
-                sendTextMessage(senderID, messageText);
+                sendPosterMessage(senderID, messageText);
+                sendTextMessage2(senderID, messageText);
+
         }
     } else if (messageAttachments) {
         sendTextMessage(senderID, "Message with attachment received");
     }
 };
 //sending message to chat ------------------------
-function sendPosterMessage(recipientId, messageText) {
+
+function sendTextMessage2(recipientId, messageText) {
   var spacesOut = messageText.split(' ').join('%20');
   var txt = spacesOut.split('poster').join('%20');
   console.log("ACA VA EL TITULO EL FUCKING TITULO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
   console.log(txt);
+    mdb.searchMovie({
+            query: txt
+        }, function(err, resp) {
+            //handling errors
+            console.log(resp);
+            if (resp['results'][0]) {
+                var peli = resp['results'][0]
+                var peli_des = resp['results'][0]['overview'];
+                var peli_poster = resp['results'][0]['poster_path'];
+            } else {
+                var peli = '';
+                var peli_des = '';
+                var peli_poster = '';
+            }
+            var messageData = {
+                    recipient: {
+                        id: recipientId
+                    },
+                    message: {
+                        text: peli_des
+                    }
+                };
 
-  mdb.searchMovie({
-      query: txt
-  }, function(err, resp) {
-      //handling errors
-      console.log(resp);
-      if (resp['results'][0]){
-        var peli = resp['results'][0]
-        var peli_des = resp['results'][0]['overview'];
-        var peli_poster = resp['results'][0]['poster_path'];
-      } else {
-        var peli = '' ;
-        var peli_des ='' ;
-        var peli_poster = '' ;
-      }
+                callSendAPI(messageData);
+
+        });
+    }
 
 
-      //mensaje
-      var messageData = {
-          recipient: {
-              id: recipientId
-          },
-          message: {
-              attachment: {
-                  type: "image",
-                  payload: {
 
-                    url: app.img_url + peli_poster
+function sendPosterMessage(recipientId, messageText) {
+    var spacesOut = messageText.split(' ').join('%20');
+    var txt = spacesOut.split('poster').join('%20');
+    console.log("ACA VA EL TITULO EL FUCKING TITULO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+    console.log(txt);
 
-                  }
-              }
-          }
-      };
+    mdb.searchMovie({
+        query: txt
+    }, function(err, resp) {
+        //handling errors
+        console.log(resp);
+        if (resp['results'][0]) {
+            var peli = resp['results'][0]
+            var peli_des = resp['results'][0]['overview'];
+            var peli_poster = resp['results'][0]['poster_path'];
+        } else {
+            var peli = '';
+            var peli_des = '';
+            var peli_poster = '';
+        }
 
-      callSendAPI(messageData);
-  });
+
+        //mensaje
+        var messageData = {
+            recipient: {
+                id: recipientId
+            },
+            message: {
+                attachment: {
+                    type: "image",
+                    payload: {
+
+                        url: app.img_url + peli_poster
+
+                    }
+                }
+            }
+        };
+
+        callSendAPI(messageData);
+    });
 }
 
 
@@ -141,14 +179,14 @@ function sendTextMessage(recipientId, messageText) {
     }, function(err, resp) {
         //handling errors
         console.log(resp);
-        if (resp['results'][0]){
-          var peli = resp['results'][0]
-          var peli_des = resp['results'][0]['overview'];
-          var peli_poster = resp['results'][0]['poster_path'];
+        if (resp['results'][0]) {
+            var peli = resp['results'][0]
+            var peli_des = resp['results'][0]['overview'];
+            var peli_poster = resp['results'][0]['poster_path'];
         } else {
-          var peli = '' ;
-          var peli_des ='' ;
-          var peli_poster = '' ;
+            var peli = '';
+            var peli_des = '';
+            var peli_poster = '';
         }
 
 
@@ -178,7 +216,7 @@ function sendTextMessage(recipientId, messageText) {
     });
 
 
-//ni idea uqe hace esto
+    //ni idea uqe hace esto
 }
 
 function callSendAPI(messageData) {
