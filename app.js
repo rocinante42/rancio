@@ -115,7 +115,7 @@ function sendTextMessage2(recipientId, messageText) {
                         id: recipientId
                     },
                     message: {
-                        text: peli_des
+                        text: "OVERVIEW: "+peli_des
                     }
                 };
 
