@@ -81,8 +81,9 @@ function receivedMessage(event) {
                 break;
 
             default:
-                sendPosterMessage(senderID, messageText);
                 sendTextMessage2(senderID, messageText);
+                sendPosterMessage(senderID, messageText);
+
 
         }
     } else if (messageAttachments) {
@@ -93,7 +94,7 @@ function receivedMessage(event) {
 
 function sendTextMessage2(recipientId, messageText) {
   var spacesOut = messageText.split(' ').join('%20');
-  var txt = spacesOut.split('poster').join('%20');
+  var txt = spacesOut;
   console.log("ACA VA EL TITULO EL FUCKING TITULO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
   console.log(txt);
     mdb.searchMovie({
@@ -110,7 +111,7 @@ function sendTextMessage2(recipientId, messageText) {
                 var peli_des = '';
                 var peli_poster = '';
             }
-            var messageData = {
+            var messageData2 = {
                     recipient: {
                         id: recipientId
                     },
@@ -119,7 +120,7 @@ function sendTextMessage2(recipientId, messageText) {
                     }
                 };
 
-                callSendAPI(messageData);
+                callSendAPI(messageData2);
 
         });
     }
